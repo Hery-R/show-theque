@@ -35,10 +35,10 @@ export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="flex flex-row justify-center items-center bg-background p-4 mb-4 rounded-lg shadow-md w-full max-w-2xl cursor-move"
+      className="flex flex-row justify-center items-center bg-background p-4 mb-4 rounded-lg shadow-md w-full max-w-2xl"
     >
       <div
-        className="flex items-center mr-4 text-primary"
+        className="flex items-center mr-4 text-primary cursor-move"
         {...listeners}
       >
         ⠿
@@ -52,7 +52,7 @@ export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
       />
       <input 
         type="number" 
-        value={item.quantity || ''} 
+        value={item.quantity === 0 ? "0" : item.quantity || ''} 
         onChange={handleQuantityChange}
         step="0.1"
         className="border-2 border-foreground border-opacity-50 rounded-md ml-2 text-xl text-foreground"

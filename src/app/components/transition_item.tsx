@@ -18,7 +18,7 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
             <p className="text-lg text-secondary">{item.title}</p>
             <input 
                 type="number" 
-                value={item.quantity || ''} 
+                value={item.quantity === 0 ? "0" : item.quantity || ''} 
                 onChange={handleQuantityChange}
                 step="0.1"
                 className="w-20 border-2 border-secondary border-opacity-50 rounded-md ml-2 text-lg text-secondary"

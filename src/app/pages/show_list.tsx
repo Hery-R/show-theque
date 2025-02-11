@@ -176,7 +176,7 @@ export default function ShowList() {
     // Clear all data
     const clearData = () => {
         setShow([{ id: 1, name: "The Lion King", quantity: 120 }]);
-        setTransitions([{ id: 1, quantity: 15 }]);
+        setTransitions([{ id: 1, quantity: 0 }]);
         setScenographyTotalDuration("360min 0s");
         setSceneDuration("360min 0s");
         setTransitionDuration("35min 0s");

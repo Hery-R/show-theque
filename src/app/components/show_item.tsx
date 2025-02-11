@@ -20,14 +20,14 @@ export default function ShowItem({item, onUpdate}: Readonly<{
           type="text" 
           value={item.name} 
           onChange={handleNameChange}
-          className="ml-2 text-xl"
+          className="border-2 border-primary border-opacity-50 rounded-md ml-2 text-xl text-primary"
         />
         <input 
           type="number" 
           value={item.quantity} 
           onChange={handleQuantityChange}
           min="0"
-          className="ml-2 text-xl"
+          className="border-2 border-foreground border-opacity-50 rounded-md ml-2 text-xl text-foreground"
         />
         <button className="ml-2 text-xl">+</button>
         <button className="ml-2 text-xl">-</button>

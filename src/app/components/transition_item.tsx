@@ -22,7 +22,7 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
                 value={item.quantity} 
                 onChange={handleQuantityChange}
                 min="0"
-                className="ml-2 w-16 text-center bg-card text-secondary rounded-md p-1"
+                className="w-20 border-2 border-secondary border-opacity-50 rounded-md ml-2 text-lg text-secondary"
             />
         </div>
     );

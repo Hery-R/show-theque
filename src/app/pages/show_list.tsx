@@ -212,9 +212,9 @@ export default function ShowList() {
 
             <div className="flex flex-row items-center justify-between w-full max-w-2xl">
                 <div className="w-12"></div>
-                <h3 className="text-xl text-accent font-bold w-36">Order</h3>
-                <h3 className="text-xl text-accent font-bold w-48">Shows</h3>
-                <h3 className="text-xl text-accent font-bold w-36">Durations</h3>
+                <h3 className="text-xl text-foreground font-bold w-36">Order</h3>
+                <h3 className="text-xl text-chart-5 font-bold w-48">Shows</h3>
+                <h3 className="text-xl text-foreground font-bold w-36">Durations</h3>
                 <div className="flex-1"></div>
             </div>
 

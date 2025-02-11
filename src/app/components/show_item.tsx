@@ -35,7 +35,7 @@ export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="flex flex-row justify-center items-center bg-background p-4 mb-4 rounded-lg shadow-md w-full max-w-2xl"
+      className="flex flex-row justify-center items-center bg-popover p-4 mb-4 rounded-lg shadow-md w-full max-w-2xl"
     >
       <div
         className="flex items-center mr-4 text-primary cursor-move"

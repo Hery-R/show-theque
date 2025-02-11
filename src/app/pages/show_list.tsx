@@ -18,19 +18,22 @@ import {
 
 export default function ShowList() {
     const [shows, setShow] = useState([
-        { id: 1, name: "The Lion King", quantity: 0 },
-        { id: 2, name: "Pirates of the Caribbean", quantity: 0 },
-        { id: 3, name: "The Hunger Games", quantity: 0 },
+        { id: 1, name: "The Lion King", quantity: 120 },
+        { id: 2, name: "Pirates of the Caribbean", quantity: 90 },
+        { id: 3, name: "The Hunger Games", quantity: 150 },
     ]);
 
     const [transitions, setTransitions] = useState([
-        { id: 1, quantity: 0 },
-        { id: 2, quantity: 0 },
+        { id: 1, quantity: 15 },
+        { id: 2, quantity: 20 },
     ]);
 
-    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("");
-    const [SceneDuration, setSceneDuration] = useState("");
-    const [TransitionDuration, setTransitionDuration] = useState("");
+    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("360min 0s");
+    const [SceneDuration, setSceneDuration] = useState("360min 0s");
+    const [TransitionDuration, setTransitionDuration] = useState("35min 0s");
+
+   
+    
 
     const sensors = useSensors(
         useSensor(PointerSensor)
@@ -59,20 +62,23 @@ export default function ShowList() {
         return `${minutes}min ${seconds.toFixed(0)}s`;
     };
 
-    const updateDurations = (currentShows: any[], currentTransitions: any[]) => {
-        // Calcul de la durée totale des scènes en secondes
-        const totalSceneDuration = currentShows.reduce((acc, show) => acc + (show.quantity * 60), 0);
-        setSceneDuration(formatDuration(totalSceneDuration));
+   
 
-        // Calcul de la durée totale des transitions en secondes
-        const totalTransitionDuration = currentTransitions.reduce((acc, transition) => acc + (transition.quantity * 60), 0);
-        setTransitionDuration(formatDuration(totalTransitionDuration));
+    const updateDurations = (currentShows: any[], currentTransitions: any[]) => {
+        // Calcul de la durée totale des scènes en minutes
+        const totalSceneDuration = currentShows.reduce((acc, show) => acc + show.quantity, 0);
+        setSceneDuration(formatDuration(totalSceneDuration * 60));
+
+        // Calcul de la durée totale des transitions en minutes
+        const totalTransitionDuration = currentTransitions.reduce((acc, transition) => acc + transition.quantity, 0);
+        setTransitionDuration(formatDuration(totalTransitionDuration * 60));
 
         // Calcul de la durée totale de la scénographie
         const totalDuration = totalSceneDuration + totalTransitionDuration;
-        setScenographyTotalDuration(formatDuration(totalDuration));
+        setScenographyTotalDuration(formatDuration(totalDuration * 60));
     };
 
+    
     const updateShowsIds = (shows: any[]) => {
         return shows.map((show, index) => ({
             ...show,
@@ -142,6 +148,41 @@ export default function ShowList() {
         }
     };
 
+    // Save data to localStorage
+    const saveData = () => {
+        const data = {
+            shows,
+            transitions,
+            scenographyTotalDuration: ScenographyTotalDuration,
+            sceneDuration: SceneDuration,
+            transitionDuration: TransitionDuration
+        };
+        localStorage.setItem('showThequeData', JSON.stringify(data));
+    };
+
+    // Load data from localStorage
+    const loadData = () => {
+        const savedData = localStorage.getItem('showThequeData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            setShow(data.shows);
+            setTransitions(data.transitions);
+            setScenographyTotalDuration(data.scenographyTotalDuration);
+            setSceneDuration(data.sceneDuration);
+            setTransitionDuration(data.transitionDuration);
+        }
+    };
+
+    // Clear all data
+    const clearData = () => {
+        setShow([{ id: 1, name: "The Lion King", quantity: 120 }]);
+        setTransitions([{ id: 1, quantity: 15 }]);
+        setScenographyTotalDuration("360min 0s");
+        setSceneDuration("360min 0s");
+        setTransitionDuration("35min 0s");
+        localStorage.removeItem('showThequeData');
+    };
+
     return (
         <>
             <h1 className="text-3xl text-accent font-bold text-center mt-10 mb-10">
@@ -149,9 +190,24 @@ export default function ShowList() {
             </h1>
 
             <div className="flex flex-row justify-center items-center mt-10 mb-10">
-                <button className="text-xl bg-secondary text-card rounded-md p-2 mr-2">Save</button>
-                <button className="text-xl bg-card text-secondary rounded-md p-2 mr-2 border-2">Load</button>
-                <button className="text-xl bg-primary text-card rounded-md p-2">Clear</button>
+                <button 
+                    onClick={saveData}
+                    className="text-xl bg-secondary text-card rounded-md p-2 mr-2"
+                >
+                    Save
+                </button>
+                <button 
+                    onClick={loadData}
+                    className="text-xl bg-card text-secondary rounded-md p-2 mr-2 border-2"
+                >
+                    Load
+                </button>
+                <button 
+                    onClick={clearData}
+                    className="text-xl bg-primary text-card rounded-md p-2"
+                >
+                    Clear
+                </button>
             </div>
 
             <div className="flex flex-row items-center justify-between mt-10 mb-10 max-w-2xl mx-auto px-4">
@@ -161,8 +217,6 @@ export default function ShowList() {
                 <h3 className="text-xl text-accent font-bold w-36">Durations</h3>
                 <div className="flex-1"></div>
             </div>
-
-           
 
             <div className="flex flex-col items-center mb-15">
                 <DndContext

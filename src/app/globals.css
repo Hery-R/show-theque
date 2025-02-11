@@ -3,19 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: hsl(325 64% 99%);
+  --foreground: hsl(325 67% 5%);
+  --muted: hsl(145 5% 86%);
+  --muted-foreground: hsl(145 8% 39%);
+  --popover: hsl(325 64% 99%);
+  --popover-foreground: hsl(325 67% 5%);
+  --card: hsl(325 64% 98%);
+  --card-foreground: hsl(325 67% 4%);
+  --border: hsl(325 7% 89%);
+  --input: hsl(325 7% 89%);
+  --primary: hsl(325 40% 37%);
+  --primary-foreground: hsl(325 40% 97%);
+  --secondary: hsl(145 40% 37%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --accent: hsl(145 40% 37%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(4 81% 42%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --ring: hsl(325 40% 37%);
+  --chart-1: hsl(325 40% 37%);
+  --chart-2: hsl(145 40% 37%);
+  --chart-3: hsl(145 40% 37%);
+  --chart-4: hsl(145 40% 40%);
+  --chart-5: hsl(325 43% 37%);
+  --radius: 0.5rem;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }

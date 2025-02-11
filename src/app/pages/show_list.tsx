@@ -8,9 +8,9 @@ import { useState } from "react";
 
 export default function ShowList() {
     const [shows, setShow] = useState([
-        { id: 1, title: "Show 1", name: "The Lion King", quantity: 30 },
-        { id: 2, title: "Show 2", name: "Pirates of the Caribbean", quantity: 20 },
-        { id: 3, title: "Show 3", name: "The Hunger Games", quantity: 10 },
+        { id: 1, name: "The Lion King", quantity: 30 },
+        { id: 2, name: "Pirates of the Caribbean", quantity: 20 },
+        { id: 3, name: "The Hunger Games", quantity: 10 },
     ]);
 
     const [transitions, setTransitions] = useState([

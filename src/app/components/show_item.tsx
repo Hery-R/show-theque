@@ -15,8 +15,8 @@ export default function ShowItem({item, onUpdate}: Readonly<{
   return (
     <>
       <div className="flex flex-row justify-center items-center">
-        <p className="text-2xl font-bold">{item.title}</p>
-        <input 
+        <p className="text-2xl font-bold">{`Show ${item.id}`}</p>
+        <input  
           type="text" 
           value={item.name} 
           onChange={handleNameChange}

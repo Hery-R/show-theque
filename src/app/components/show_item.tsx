@@ -3,9 +3,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-export default function ShowItem({item, onUpdate}: Readonly<{
+export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
   item: any,
-  onUpdate: (updatedItem: any) => void
+  onUpdate: (updatedItem: any) => void,
+  onAdd: (id: number) => void,
+  onDelete: (id: number) => void
 }>) {
   const {
     attributes,
@@ -55,8 +57,18 @@ export default function ShowItem({item, onUpdate}: Readonly<{
         min="0"
         className="border-2 border-foreground border-opacity-50 rounded-md ml-2 text-xl text-foreground"
       />
-      <button className="ml-2 text-xl">+</button>
-      <button className="ml-2 text-xl">-</button>
+      <button 
+        className="ml-2 text-xl text-primary hover:text-accent" 
+        onClick={() => onAdd(item.id)}
+      >
+        +
+      </button>
+      <button 
+        className="ml-2 text-xl text-primary hover:text-accent" 
+        onClick={() => onDelete(item.id)}
+      >
+        -
+      </button>
     </div>
   );
 }

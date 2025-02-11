@@ -45,6 +45,54 @@ export default function ShowList() {
         ));
     };
 
+    const updateShowsIds = (shows: any[]) => {
+        return shows.map((show, index) => ({
+            ...show,
+            id: index + 1
+        }));
+    };
+
+    const handleShowAdd = (id: number) => {
+        const index = shows.findIndex(show => show.id === id);
+        const newShows = [...shows];
+        newShows.splice(index + 1, 0, { id: id + 1, name: "", quantity: 0 });
+        // Mettre à jour tous les IDs après l'ajout
+        const updatedShows = updateShowsIds(newShows);
+        setShow(updatedShows);
+
+        // ajoute une transition si nécessaire
+        if (index < transitions.length) {
+            const newTransitions = [...transitions];
+            newTransitions.splice(index, 0, { id: index + 1, quantity: 0 });
+            // Mettre à jour les IDs des transitions
+            const updatedTransitions = newTransitions.map((transition, idx) => ({
+                ...transition,
+                id: idx + 1
+            }));
+            setTransitions(updatedTransitions);
+        }
+    };
+
+    const handleShowDelete = (id: number) => {
+        const index = shows.findIndex(show => show.id === id);
+        const newShows = shows.filter(show => show.id !== id);
+        // Mettre à jour tous les IDs après la suppression
+        const updatedShows = updateShowsIds(newShows);
+        setShow(updatedShows);
+
+        // supprime la transition si nécessaire
+        if (index < transitions.length) {
+            const newTransitions = [...transitions];
+            newTransitions.splice(index, 1);
+            // Mettre à jour les IDs des transitions
+            const updatedTransitions = newTransitions.map((transition, idx) => ({
+                ...transition,
+                id: idx + 1
+            }));
+            setTransitions(updatedTransitions);
+        }
+    };
+
     const handleDragEnd = (event: any) => {
         const { active, over } = event;
 
@@ -53,8 +101,16 @@ export default function ShowList() {
                 const oldIndex = items.findIndex((item) => item.id === active.id);
                 const newIndex = items.findIndex((item) => item.id === over.id);
 
-                return arrayMove(items, oldIndex, newIndex);
+                const reorderedItems = arrayMove(items, oldIndex, newIndex);
+                // mettre à jour les id des éléments
+                return updateShowsIds(reorderedItems);
             });
+
+            // Mettre à jour les IDs des transitions
+            setTransitions(transitions => transitions.map((transition, index) => ({
+                ...transition,
+                id: index + 1
+            })));
         }
     };
 
@@ -86,6 +142,8 @@ export default function ShowList() {
                                     key={show.id}
                                     item={show}
                                     onUpdate={handleShowUpdate}
+                                    onAdd={handleShowAdd}
+                                    onDelete={handleShowDelete}
                                 />
                                 {index < shows.length - 1 && (
                                     <TransitionItem

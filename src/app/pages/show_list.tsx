@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ShowItem from "../components/show_item";
 import TransitionItem from "../components/transition_item";
-import { useState } from "react";
 import {
     DndContext,
     closestCenter,
@@ -19,9 +18,9 @@ import {
 
 export default function ShowList() {
     const [shows, setShow] = useState([
-        { id: 1, name: "The Lion King", quantity: 30 },
-        { id: 2, name: "Pirates of the Caribbean", quantity: 20 },
-        { id: 3, name: "The Hunger Games", quantity: 10 },
+        { id: 1, name: "The Lion King", quantity: 0 },
+        { id: 2, name: "Pirates of the Caribbean", quantity: 0 },
+        { id: 3, name: "The Hunger Games", quantity: 0 },
     ]);
 
     const [transitions, setTransitions] = useState([
@@ -29,20 +28,49 @@ export default function ShowList() {
         { id: 2, quantity: 0 },
     ]);
 
+    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("");
+    const [SceneDuration, setSceneDuration] = useState("");
+    const [TransitionDuration, setTransitionDuration] = useState("");
+
     const sensors = useSensors(
         useSensor(PointerSensor)
     );
 
     const handleShowUpdate = (updatedItem: any) => {
-        setShow(shows.map(show =>
+        const updatedShows = shows.map(show =>
             show.id === updatedItem.id ? updatedItem : show
-        ));
+        );
+        setShow(updatedShows);
+        updateDurations(updatedShows, transitions);
     };
 
     const handleTransitionUpdate = (updatedTransition: any) => {
-        setTransitions(transitions.map(transition =>
+        const updatedTransitions = transitions.map(transition =>
             transition.id === updatedTransition.id ? updatedTransition : transition
-        ));
+        );
+        setTransitions(updatedTransitions);
+        updateDurations(shows, updatedTransitions);
+    };
+
+    const formatDuration = (totalSeconds: number) => {
+        if (isNaN(totalSeconds)) return "";
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes}min ${seconds.toFixed(0)}s`;
+    };
+
+    const updateDurations = (currentShows: any[], currentTransitions: any[]) => {
+        // Calcul de la durée totale des scènes en secondes
+        const totalSceneDuration = currentShows.reduce((acc, show) => acc + (show.quantity * 60), 0);
+        setSceneDuration(formatDuration(totalSceneDuration));
+
+        // Calcul de la durée totale des transitions en secondes
+        const totalTransitionDuration = currentTransitions.reduce((acc, transition) => acc + (transition.quantity * 60), 0);
+        setTransitionDuration(formatDuration(totalTransitionDuration));
+
+        // Calcul de la durée totale de la scénographie
+        const totalDuration = totalSceneDuration + totalTransitionDuration;
+        setScenographyTotalDuration(formatDuration(totalDuration));
     };
 
     const updateShowsIds = (shows: any[]) => {
@@ -71,6 +99,7 @@ export default function ShowList() {
             }));
             setTransitions(updatedTransitions);
         }
+        updateDurations(updatedShows, transitions);
     };
 
     const handleShowDelete = (id: number) => {
@@ -90,6 +119,9 @@ export default function ShowList() {
                 id: idx + 1
             }));
             setTransitions(updatedTransitions);
+            updateDurations(updatedShows, updatedTransitions);
+        } else {
+            updateDurations(updatedShows, transitions);
         }
     };
 
@@ -106,17 +138,13 @@ export default function ShowList() {
                 return updateShowsIds(reorderedItems);
             });
 
-            // Mettre à jour les IDs des transitions
-            setTransitions(transitions => transitions.map((transition, index) => ({
-                ...transition,
-                id: index + 1
-            })));
+           
         }
     };
 
     return (
         <>
-            <h1 className="text-3xl text-accent font-bold  text-center mt-10 mb-10">
+            <h1 className="text-3xl text-accent font-bold text-center mt-10 mb-10">
                 ShowThèque
             </h1>
 
@@ -126,7 +154,17 @@ export default function ShowList() {
                 <button className="text-xl bg-primary text-card rounded-md p-2">Clear</button>
             </div>
 
-            <div className="flex flex-col items-center h-screen">
+            <div className="flex flex-row items-center justify-between mt-10 mb-10 max-w-2xl mx-auto px-4">
+                <div className="w-12"></div>
+                <h3 className="text-xl text-accent font-bold w-36">Order</h3>
+                <h3 className="text-xl text-accent font-bold w-48">Shows</h3>
+                <h3 className="text-xl text-accent font-bold w-36">Durations</h3>
+                <div className="flex-1"></div>
+            </div>
+
+           
+
+            <div className="flex flex-col items-center mb-15">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
@@ -160,6 +198,12 @@ export default function ShowList() {
                         ))}
                     </SortableContext>
                 </DndContext>
+            </div>
+
+            <div className="flex flex-col items-center">
+                <h4 className="text-xl text-foreground ">Scenography total duration : {ScenographyTotalDuration}</h4>
+                <h4 className="text-xl text-foreground ">Scene duration : {SceneDuration} </h4>
+                <h4 className="text-xl text-foreground ">Transition duration : {TransitionDuration}</h4>
             </div>
         </>
     );

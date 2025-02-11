@@ -1,3 +1,5 @@
+import { on } from "events";
+
 export default function TransitionItem({ item, onUpdate }: Readonly<{
     item: {
         id: number,
@@ -7,11 +9,8 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
     onUpdate: (updatedItem: any) => void
 }>) {
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newQuantity = parseInt(e.target.value) || 0;
-        onUpdate({ 
-            id: item.id,
-            quantity: newQuantity
-        });
+        const value = e.target.value;
+        onUpdate({ ...item, quantity: value === '' ? 0 : parseFloat(value)});
     };
 
     return (
@@ -19,9 +18,9 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
             <p className="text-lg text-secondary">{item.title}</p>
             <input 
                 type="number" 
-                value={item.quantity} 
+                value={item.quantity || ''} 
                 onChange={handleQuantityChange}
-                min="0"
+                step="0.1"
                 className="w-20 border-2 border-secondary border-opacity-50 rounded-md ml-2 text-lg text-secondary"
             />
         </div>

@@ -52,7 +52,7 @@ export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
       />
       <input 
         type="number" 
-        value={item.quantity === 0 ? "0" : item.quantity || ''} 
+        value={item.quantity === 0 ? "" : item.quantity || ''} 
         onChange={handleQuantityChange}
         step="0.1"
         className="border-2 border-foreground border-opacity-50 rounded-md ml-2 text-xl text-foreground"

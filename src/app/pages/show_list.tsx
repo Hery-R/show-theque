@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ShowItem from "../components/show_item";
 import TransitionItem from "../components/transition_item";
 import {
@@ -18,22 +18,25 @@ import {
 
 export default function ShowList() {
     const [shows, setShow] = useState([
-        { id: 1, name: "The Lion King", quantity: 120 },
-        { id: 2, name: "Pirates of the Caribbean", quantity: 90 },
-        { id: 3, name: "The Hunger Games", quantity: 150 },
+        { id: 1, name: "La nuit de l'été", quantity: 30 },
+        { id: 2, name: "Le grand bleu", quantity: 30 },
+        { id: 3, name: "La fête des masques", quantity: 30 },
     ]);
 
     const [transitions, setTransitions] = useState([
-        { id: 1, quantity: 15 },
-        { id: 2, quantity: 20 },
+        { id: 1, quantity: 0.5 },
+        { id: 2, quantity: 0.5 },
     ]);
 
-    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("360min 0s");
-    const [SceneDuration, setSceneDuration] = useState("360min 0s");
-    const [TransitionDuration, setTransitionDuration] = useState("35min 0s");
+    const [mounted, setMounted] = useState(false);
 
-   
-    
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("1h40min 0s");
+    const [SceneDuration, setSceneDuration] = useState("1h30min 0s");
+    const [TransitionDuration, setTransitionDuration] = useState("1h0min 0s");
 
     const sensors = useSensors(
         useSensor(PointerSensor)
@@ -57,12 +60,11 @@ export default function ShowList() {
 
     const formatDuration = (totalSeconds: number) => {
         if (isNaN(totalSeconds)) return "";
-        const minutes = Math.floor(totalSeconds / 60);
+        const heures = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        return `${minutes}min ${seconds.toFixed(0)}s`;
+        return heures > 0 ? `${heures}h ${minutes}min ${seconds.toFixed(0)}s` : `${minutes}min ${seconds.toFixed(0)}s`;
     };
-
-   
 
     const updateDurations = (currentShows: any[], currentTransitions: any[]) => {
         // Calcul de la durée totale des scènes en minutes
@@ -78,7 +80,6 @@ export default function ShowList() {
         setScenographyTotalDuration(formatDuration(totalDuration * 60));
     };
 
-    
     const updateShowsIds = (shows: any[]) => {
         return shows.map((show, index) => ({
             ...show,
@@ -144,7 +145,6 @@ export default function ShowList() {
                 return updateShowsIds(reorderedItems);
             });
 
-           
         }
     };
 
@@ -175,7 +175,7 @@ export default function ShowList() {
 
     // Clear all data
     const clearData = () => {
-        setShow([{ id: 1, name: "The Lion King", quantity: 120 }]);
+        setShow([{ id: 1, name: "La nuit de l'été", quantity: 0.5 }]);
         setTransitions([{ id: 1, quantity: 0 }]);
         setScenographyTotalDuration("360min 0s");
         setSceneDuration("360min 0s");
@@ -184,25 +184,25 @@ export default function ShowList() {
     };
 
     return (
-        <>
-            <h1 className="text-3xl text-accent font-bold text-center mt-10 mb-10">
+        <div className="flex flex-col items-center justify-center min-h-screen">
+            <h1 className="text-3xl text-accent font-bold text-center">
                 ShowThèque
             </h1>
 
             <div className="flex flex-row justify-center items-center mt-10 mb-10">
-                <button 
+                <button
                     onClick={saveData}
                     className="text-xl bg-secondary text-card rounded-md p-2 mr-2"
                 >
                     Save
                 </button>
-                <button 
+                <button
                     onClick={loadData}
                     className="text-xl bg-card text-secondary rounded-md p-2 mr-2 border-2"
                 >
                     Load
                 </button>
-                <button 
+                <button
                     onClick={clearData}
                     className="text-xl bg-primary text-card rounded-md p-2"
                 >
@@ -210,7 +210,7 @@ export default function ShowList() {
                 </button>
             </div>
 
-            <div className="flex flex-row items-center justify-between mt-10 mb-10 max-w-2xl mx-auto px-4">
+            <div className="flex flex-row items-center justify-between w-full max-w-2xl">
                 <div className="w-12"></div>
                 <h3 className="text-xl text-accent font-bold w-36">Order</h3>
                 <h3 className="text-xl text-accent font-bold w-48">Shows</h3>
@@ -218,7 +218,8 @@ export default function ShowList() {
                 <div className="flex-1"></div>
             </div>
 
-            <div className="flex flex-col items-center mb-15">
+
+            {mounted ? (
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
@@ -237,13 +238,13 @@ export default function ShowList() {
                                     onAdd={handleShowAdd}
                                     onDelete={handleShowDelete}
                                 />
-                                {index < shows.length - 1 && (
+                                {index < transitions.length && (
                                     <TransitionItem
                                         key={`transition-${show.id}`}
                                         item={{
-                                            id: show.id,
+                                            id: transitions[index].id,
                                             title: `${show.name} -> ${shows[index + 1].name}`,
-                                            quantity: transitions[index]?.quantity || 0
+                                            quantity: transitions[index].quantity
                                         }}
                                         onUpdate={handleTransitionUpdate}
                                     />
@@ -252,13 +253,12 @@ export default function ShowList() {
                         ))}
                     </SortableContext>
                 </DndContext>
-            </div>
-
-            <div className="flex flex-col items-center">
+            ) : null}
+            <div className="flex flex-col items-center w-full">
                 <h4 className="text-xl text-foreground ">Scenography total duration : {ScenographyTotalDuration}</h4>
                 <h4 className="text-xl text-foreground ">Scene duration : {SceneDuration} </h4>
                 <h4 className="text-xl text-foreground ">Transition duration : {TransitionDuration}</h4>
             </div>
-        </>
+        </div>
     );
 }

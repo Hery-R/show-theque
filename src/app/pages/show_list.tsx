@@ -180,7 +180,6 @@ export default function ShowList() {
         setScenographyTotalDuration("360min 0s");
         setSceneDuration("360min 0s");
         setTransitionDuration("35min 0s");
-        localStorage.removeItem('showThequeData');
     };
 
     return (
@@ -238,7 +237,7 @@ export default function ShowList() {
                                     onAdd={handleShowAdd}
                                     onDelete={handleShowDelete}
                                 />
-                                {index < transitions.length && (
+                                {index < shows.length - 1&& (
                                     <TransitionItem
                                         key={`transition-${show.id}`}
                                         item={{

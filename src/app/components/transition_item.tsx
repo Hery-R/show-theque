@@ -10,7 +10,7 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
 }>) {
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        onUpdate({ ...item, quantity: value === '' ? 0 : parseFloat(value)});
+        onUpdate({ ...item, quantity: parseFloat(value) < 0 ? 0 : value });
     };
 
     return (
@@ -21,7 +21,7 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
                 value={item.quantity === 0 ? "" : item.quantity || ''} 
                 onChange={handleQuantityChange}
                 step="0.1"
-                className="w-20 border-2 border-secondary border-opacity-50 rounded-md ml-2 text-lg text-secondary"
+                className="w-20 border-2 border-secondary border-opacity-50 rounded-md ml-2 text-lg text-secondary text-center"
             />
         </div>
     );

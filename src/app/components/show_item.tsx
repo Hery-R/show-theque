@@ -27,7 +27,7 @@ export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
   };
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate({ ...item, quantity: e.target.value === '' ? 0 : parseFloat(e.target.value)});
+    onUpdate({ ...item, quantity: parseFloat(e.target.value) < 0 ? 0 : e.target.value });
   };
 
   return (
@@ -48,14 +48,14 @@ export default function ShowItem({item, onUpdate, onAdd, onDelete}: Readonly<{
         type="text" 
         value={item.name} 
         onChange={handleNameChange}
-        className="border-2 border-primary border-opacity-50 rounded-md ml-2 text-xl text-primary"
+        className="border-2 border-primary border-opacity-50 rounded-md ml-2 text-xl text-primary text-center"
       />
       <input 
         type="number" 
-        value={item.quantity === 0 ? "" : item.quantity || ''} 
+        value={item.quantity} 
         onChange={handleQuantityChange}
         step="0.1"
-        className="border-2 border-foreground border-opacity-50 rounded-md ml-2 text-xl text-foreground"
+        className="border-2 border-foreground border-opacity-50 rounded-md ml-2 text-xl text-foreground text-center"
       />
       <button 
         className="btn-lg ml-2 text-xl text-primary hover:text-accent"

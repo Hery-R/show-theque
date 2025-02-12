@@ -1,5 +1,3 @@
-import { on } from "events";
-
 export default function TransitionItem({ item, onUpdate }: Readonly<{
     item: {
         id: number,
@@ -10,15 +8,16 @@ export default function TransitionItem({ item, onUpdate }: Readonly<{
 }>) {
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        onUpdate({ ...item, quantity: parseFloat(value) < 0 ? 0 : value });
+        onUpdate({ ...item, quantity: parseFloat(value) < 0  || value === "" ? 0 : parseFloat(value) });
     };
+    
 
     return (
         <div className="flex flex-row justify-center items-center my-2 p-2 bg-secondary/20 rounded-md w-96">
             <p className="text-lg text-secondary">{item.title}</p>
             <input 
                 type="number" 
-                value={item.quantity === 0 ? "" : item.quantity || ''} 
+                value={item.quantity === 0 ? "" : item.quantity}
                 onChange={handleQuantityChange}
                 step="0.1"
                 className="w-20 border-2 border-secondary border-opacity-50 rounded-md ml-2 text-lg text-secondary text-center"

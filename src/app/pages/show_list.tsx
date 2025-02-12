@@ -24,8 +24,8 @@ export default function ShowList() {
     ]);
 
     const [transitions, setTransitions] = useState([
-        { id: 1, quantity: 0.5 },
-        { id: 2, quantity: 0.5 },
+        { id: 1, quantity: 10 },
+        { id: 2, quantity: 10 },
     ]);
 
     const [mounted, setMounted] = useState(false);
@@ -34,9 +34,9 @@ export default function ShowList() {
         setMounted(true);
     }, []);
 
-    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("1h40min 0s");
+    const [ScenographyTotalDuration, setScenographyTotalDuration] = useState("1h50min 0s");
     const [SceneDuration, setSceneDuration] = useState("1h30min 0s");
-    const [TransitionDuration, setTransitionDuration] = useState("1h0min 0s");
+    const [TransitionDuration, setTransitionDuration] = useState("20min 0s");
 
     const sensors = useSensors(
         useSensor(PointerSensor)
@@ -60,24 +60,36 @@ export default function ShowList() {
 
     const formatDuration = (totalSeconds: number) => {
         if (isNaN(totalSeconds)) return "";
-        const heures = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        return heures > 0 ? `${heures}h ${minutes}min ${seconds.toFixed(0)}s` : `${minutes}min ${seconds.toFixed(0)}s`;
+
+        const totalSecondsRounded = Math.round(totalSeconds);
+        let heures = Math.floor(totalSecondsRounded / 3600);
+        let minutes = Math.floor((totalSecondsRounded % 3600) / 60);
+        let seconds = totalSecondsRounded % 60;
+        
+        // l'heure doit être comprise entre 0 et 24
+        heures = heures >= 24 ? heures % 24 : heures;
+
+        // les minutes doivent être comprises entre 0 et 60
+        if (minutes >= 60) {
+            heures = (heures + Math.floor(minutes / 60)) % 24;
+            minutes = minutes % 60;
+        }
+        
+        return heures > 0 ? `${heures}h ${minutes}min ${seconds}s` : `${minutes}min ${seconds}s`;
     };
 
     const updateDurations = (currentShows: any[], currentTransitions: any[]) => {
-        // Calcul de la durée totale des scènes en minutes
-        const totalSceneDuration = currentShows.reduce((acc, show) => acc + show.quantity, 0);
+        // Calcul de la durée totale des scènes (en minutes)
+        const totalSceneDuration = currentShows.reduce((acc, show) => acc + (isNaN(show.quantity) ? 0 : parseFloat(show.quantity)), 0);
         setSceneDuration(formatDuration(totalSceneDuration * 60));
 
-        // Calcul de la durée totale des transitions en minutes
-        const totalTransitionDuration = currentTransitions.reduce((acc, transition) => acc + transition.quantity, 0);
+        // Calcul de la durée totale des transitions (en minutes)
+        const totalTransitionDuration = currentTransitions.reduce((acc, transition) => acc + (isNaN(transition.quantity) ? 0 : parseFloat(transition.quantity)), 0);
         setTransitionDuration(formatDuration(totalTransitionDuration * 60));
 
-        // Calcul de la durée totale de la scénographie
-        const totalDuration = totalSceneDuration + totalTransitionDuration;
-        setScenographyTotalDuration(formatDuration(totalDuration * 60));
+        // Calcul de la durée totale de la scénographie (en minutes)
+        const totalDuration = totalSceneDuration * 60 + totalTransitionDuration * 60;
+        setScenographyTotalDuration(formatDuration(totalDuration));
     };
 
     const updateShowsIds = (shows: any[]) => {
@@ -148,7 +160,7 @@ export default function ShowList() {
         }
     };
 
-    // Save data to localStorage
+    // stoker les données
     const saveData = () => {
         const data = {
             shows,
@@ -160,7 +172,7 @@ export default function ShowList() {
         localStorage.setItem('showThequeData', JSON.stringify(data));
     };
 
-    // Load data from localStorage
+    // Load les données depuis localStorage
     const loadData = () => {
         const savedData = localStorage.getItem('showThequeData');
         if (savedData) {
@@ -173,13 +185,13 @@ export default function ShowList() {
         }
     };
 
-    // Clear all data
+    // Clear toutes les données
     const clearData = () => {
-        setShow([{ id: 1, name: "La nuit de l'été", quantity: 0.5 }]);
+        setShow([{ id: 1, name: "La nuit de l'été", quantity: 5 }]);
         setTransitions([{ id: 1, quantity: 0 }]);
-        setScenographyTotalDuration("360min 0s");
-        setSceneDuration("360min 0s");
-        setTransitionDuration("35min 0s");
+        setScenographyTotalDuration("5min 0s");
+        setSceneDuration("5min 0s");
+        setTransitionDuration("0min 0s");
     };
 
     return (

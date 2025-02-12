@@ -203,21 +203,24 @@ export default function ShowList() {
             <div className="flex flex-row justify-center items-center mt-10 mb-10">
                 <button
                     onClick={saveData}
-                    className="text-xl bg-secondary text-card rounded-md p-2 mr-2"
+                    className="text-xl bg-secondary text-card rounded-md p-2 mr-2 w-12 h-12 flex items-center justify-center"
+                    title="Save"
                 >
-                    Save
+                    <i className="fas fa-save"></i>
                 </button>
                 <button
                     onClick={loadData}
-                    className="text-xl bg-card text-secondary rounded-md p-2 mr-2 border-2"
+                    className="text-xl bg-card text-secondary rounded-md p-2 mr-2 border-2 w-12 h-12 flex items-center justify-center"
+                    title="Load"
                 >
-                    Load
+                    <i className="fas fa-folder-open"></i>
                 </button>
                 <button
                     onClick={clearData}
-                    className="text-xl bg-primary text-card rounded-md p-2"
+                    className="text-xl bg-primary text-card rounded-md p-2 w-12 h-12 flex items-center justify-center"
+                    title="Clear"
                 >
-                    Clear
+                    <i className="fas fa-trash"></i>
                 </button>
             </div>
 
@@ -249,12 +252,12 @@ export default function ShowList() {
                                     onAdd={handleShowAdd}
                                     onDelete={handleShowDelete}
                                 />
-                                {index < shows.length - 1&& (
+                                {index < shows.length - 1 && (
                                     <TransitionItem
                                         key={`transition-${show.id}`}
                                         item={{
                                             id: transitions[index].id,
-                                            title: `${show.name} -> ${shows[index + 1].name}`,
+                                            title: `${show.name} → ${shows[index + 1].name}`,
                                             quantity: transitions[index].quantity
                                         }}
                                         onUpdate={handleTransitionUpdate}
